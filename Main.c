@@ -4,6 +4,7 @@
 #include <unistd.h>
 
 #define BUFFER_SIZE 5
+#define NUM_ITEMS 10
 
 int buffer[BUFFER_SIZE];
 int in = 0, out = 0, count = 0;
@@ -14,7 +15,7 @@ pthread_cond_t not_empty;
 
 // Producer function
 void* producer(void* arg) {
-    while (1) {
+    for (int i = 0; i < NUM_ITEMS; i++) {
         int item = rand() % 100; // produce an item
 
         pthread_mutex_lock(&mutex);
@@ -23,7 +24,7 @@ void* producer(void* arg) {
             pthread_cond_wait(&not_full, &mutex);
 
         buffer[in] = item;
-        printf("Produced: %d at %d\n", item, in);
+        printf("Produced: %d at index %d\n", item, in);
         in = (in + 1) % BUFFER_SIZE;
         count++;
 
@@ -37,14 +38,14 @@ void* producer(void* arg) {
 
 // Consumer function
 void* consumer(void* arg) {
-    while (1) {
+    for (int i = 0; i < NUM_ITEMS; i++) {
         pthread_mutex_lock(&mutex);
 
         while (count == 0) // buffer empty
             pthread_cond_wait(&not_empty, &mutex);
 
         int item = buffer[out];
-        printf("Consumed: %d at %d\n", item, out);
+        printf("Consumed: %d at index %d\n", item, out);
         out = (out + 1) % BUFFER_SIZE;
         count--;
 
@@ -73,5 +74,6 @@ int main() {
     pthread_cond_destroy(&not_full);
     pthread_cond_destroy(&not_empty);
 
+    printf("Execution complete.\n");
     return 0;
 }
