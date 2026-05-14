@@ -24,3 +24,10 @@ The program will run indefinitely, producing and consuming items in a shared buf
 
 - GCC compiler
 - POSIX threads library (usually included with GCC)
+
+
+STEP 1: Open terminal
+
+STEP 2: gcc main.c -o producer_consumer -pthread
+
+STEP 3: ./producer_consumer
